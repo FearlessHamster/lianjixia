@@ -6,6 +6,7 @@ export const useUserStore = defineStore('user', {
             username: "",
             rid: 0,
             xp: 0,
+            room: 0,
             loginstatus: false
         }
     },

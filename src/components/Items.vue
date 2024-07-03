@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { onMounted, inject, type Ref } from 'vue';
 import { useRoomStore } from '@/stores/Rooms';
-import { getRooms } from '@/utils/CommonServices';
+import { AddPlayer, getRooms } from '@/utils/CommonServices';
 import { useUserStore } from '@/stores/User';
 
 const room = useRoomStore();
@@ -43,16 +43,18 @@ onMounted(() => {
 let setActiveTab = inject("setActiveTab") as Function;
 let tabTitle = inject("tabTitle") as Ref;
 
-function openpage(index: number) {
+async function openpage(index: number) {
     localStorage.setItem("index", index.toString());
     setActiveTab("我的游戏");
-    console.log(user.rid);
-    
-    if(index == user.rid) {
-        tabTitle.value = "我的游戏";
-    }else{
-        tabTitle.value = "当前加入";
+    if(await AddPlayer(index)){
+      if(index == user.rid) {
+          tabTitle.value = "我的游戏";
+      }else{
+          tabTitle.value = "当前加入";
+      }
     }
+    await getRooms();
+    
 }
 
 function getPlayerCountBackgroundColor(playerCount: number, maxPlayerCount: number): string {

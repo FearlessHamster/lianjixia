@@ -51,7 +51,7 @@ import Rooms from "@/components/Rooms.vue";
 import Items from "@/components/Items.vue";
 import User from "@/components/User.vue";
 import { Base64 } from 'js-base64';
-
+import { LeavePlayer, getRooms } from "@/utils/CommonServices";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "./stores/User";
 
@@ -82,6 +82,9 @@ function setActiveTab(tabName: string) {
   if(tabName !== activeTab.value) {
     if(tabName == "国服大厅") {
       tabTitle.value = "我的游戏";
+      
+      LeavePlayer(Number(localStorage.getItem("index")?? "0"));
+      
       localStorage.setItem("index",user.rid.toString());
     }
   }
@@ -102,11 +105,17 @@ function prevPage() {
     room.currentPage--;
   }
 }
+window.addEventListener('beforeunload', (e) => {
+  LeavePlayer(Number(localStorage.getItem("index")?? "0"));
+})
 
 </script>
 
 <style>
 
+.layui-layer-msg {
+  margin-top: -180px;
+}
 
 .pagination-controls button[disabled] {
   opacity: 0.5;
@@ -188,7 +197,7 @@ function prevPage() {
   position: absolute;
   display: flex;
   margin-top: 10px;
-  margin-left: -30px;
+  margin-left: 10px;
 }
 .tab .item {
   width: 100px;

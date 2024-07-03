@@ -126,7 +126,7 @@
                   </table>
                 </div>
                 <div style="margin-top: 5px;height: 50px;max-height: 50px">
-                  <button @click="setActiveTab('国服大厅')" style="background-color: #4D433A;width: 40px;height: 50px;margin-right: 2px;color: #d8d7d5;border: none;"><</button>
+                  <button @click="Leave()" style="background-color: #4D433A;width: 40px;height: 50px;margin-right: 2px;color: #d8d7d5;border: none;"><</button>
                   <button style="background-color: #DA4729;width: 130px;height: 50px;color: #d8d7d5;border: none;">启动游戏</button>
                 </div>
               </div>
@@ -135,20 +135,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineProps, inject, type Ref } from "vue";
+import { watch, ref, computed, defineProps, inject, type Ref } from "vue";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "@/stores/User";
+import { LeavePlayer } from "@/utils/CommonServices";
 
 const room = useRoomStore();
 const user = useUserStore();
 
 let index = Number(localStorage.getItem("index"));
 const activeTab2 = ref("基本信息"); // 默认激活的项
+const players = ref([]); 
 
 const tabTitle = inject("tabTitle") as Ref;
 const setActiveTab = inject("setActiveTab") as Function;
 
-let item = {
+let item = ref({
             rid: 0,
             title: "",
             img: "",
@@ -160,26 +162,40 @@ let item = {
             viplevel: 0,
             plugins: [],
             mods: []
-          };
-for (let i = 0; i < room.rooms.length; i++) {
+          });
+
+watch(() => room.rooms, (newVal, oldVal) => {
+  // 这里是你想要执行的函数，每当 room.rooms 更新时都会调用
+  for (let i = 0; i < room.rooms.length; i++) {
   if (room.rooms[i].rid == index) {
-    item = room.rooms[i];
+    room.rooms[i].players.push(user.username);;
+    item.value = room.rooms[i];
     break;
   }
 }
-console.log(item);
+  // 例如，重新计算某些值或调用另一个函数
+}, {
+  deep: true // 使用深度监听，以便于监听数组或对象内部值的变化
+});
 
 const truncatedDec = computed(() => {
-  if (item && item.dec.length > 200) {
-    return item.dec.substring(0, 200) + '...';
+  if (item && item.value.dec.length > 200) {
+    return item.value.dec.substring(0, 200) + '...';
   }
-  return item ? item.dec : '';
+  return item ? item.value.dec : '';
 });
 
 
 function setActiveTab2(tabName: string) {
   activeTab2.value = tabName;
 }
+
+async function Leave() {
+    setActiveTab('国服大厅');
+}
+
+
+
 </script>
 
 <style scoped>
