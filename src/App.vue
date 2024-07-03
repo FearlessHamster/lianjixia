@@ -63,13 +63,13 @@ let userinfo = JSON.parse(Base64.decode(localStorage.getItem('userinfo') ?? ""))
 user.setUserinfo(userinfo);
 
 
-var tabTitle = ref('我的游戏');
+const tabTitle = ref('我的游戏');
 
 provide('tabTitle',tabTitle)
 
-var activeTab = ref("国服大厅"); // 默认激活的项
+const activeTab = ref("国服大厅"); // 默认激活的项
 
-var setActiveTab = function(tabName: string) {
+function setActiveTab(tabName: string) {
   // 如果尝试切换到“我的游戏”且用户名为空，则不执行任何操作
   if(tabName === "我的游戏" && user.username == "") {
     // 可以在这里添加一个提示，例如使用alert或者一个自定义的提示组件

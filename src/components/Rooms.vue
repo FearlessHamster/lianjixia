@@ -138,15 +138,17 @@
 import { ref, computed, defineProps, inject, type Ref } from "vue";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "@/stores/User";
+
 const room = useRoomStore();
 const user = useUserStore();
+
 let index = Number(localStorage.getItem("index"));
 const activeTab2 = ref("基本信息"); // 默认激活的项
 
-let tabTitle = inject("tabTitle") as Ref;
-let setActiveTab = inject("setActiveTab") as Function;
+const tabTitle = inject("tabTitle") as Ref;
+const setActiveTab = inject("setActiveTab") as Function;
 
-var item = {
+let item = {
             rid: 0,
             title: "",
             img: "",
