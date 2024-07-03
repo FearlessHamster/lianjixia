@@ -51,7 +51,7 @@ import Rooms from "@/components/Rooms.vue";
 import Items from "@/components/Items.vue";
 import User from "@/components/User.vue";
 import { Base64 } from 'js-base64';
-import { LeavePlayer, getRooms } from "@/utils/CommonServices";
+import { LeavePlayer, AddPlayer } from "@/utils/CommonServices";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "./stores/User";
 
@@ -77,6 +77,8 @@ function setActiveTab(tabName: string) {
     
     user.toggleLoginStatus();
     return; // 直接返回，不切换标签
+  }else if(tabName == "我的游戏" && user.username!= "") {
+    AddPlayer(user.rid);
   }
 
   if(tabName !== activeTab.value) {
@@ -105,9 +107,6 @@ function prevPage() {
     room.currentPage--;
   }
 }
-window.addEventListener('beforeunload', (e) => {
-  LeavePlayer(Number(localStorage.getItem("index")?? "0"));
-})
 
 </script>
 

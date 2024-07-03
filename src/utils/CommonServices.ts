@@ -82,6 +82,7 @@ export async function AddPlayer(rid:number) {
     layer.msg(data.msg, { time: 1000 })
     if(data.code == 200) {
         user.room = rid;
+        getRooms();
         return true;
     }else{
         return false;
@@ -101,8 +102,7 @@ export async function LeavePlayer(rid:number) {
     layer.msg(data.msg, { time: 1000 })
     if(data.code == 200) {
         user.room = 0;
-        
-        
+        getRooms();
         return true;
     }else{
         return false;

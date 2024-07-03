@@ -168,7 +168,7 @@ watch(() => room.rooms, (newVal, oldVal) => {
   // 这里是你想要执行的函数，每当 room.rooms 更新时都会调用
   for (let i = 0; i < room.rooms.length; i++) {
   if (room.rooms[i].rid == index) {
-    room.rooms[i].players.push(user.username);;
+    room.rooms[i].players.join(user.username);
     item.value = room.rooms[i];
     break;
   }
@@ -193,8 +193,6 @@ function setActiveTab2(tabName: string) {
 async function Leave() {
     setActiveTab('国服大厅');
 }
-
-
 
 </script>
 
