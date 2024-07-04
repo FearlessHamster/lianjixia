@@ -58,6 +58,9 @@ async function func_login() {
   if(code.value == ""){
     layer.msg("请输入验证码");
     return;
+  }else if(code.value.length != 4){
+    layer.msg("验证码错误");
+    return;
   }
   await Login(username.value, password.value)
     
@@ -66,6 +69,9 @@ async function func_login() {
 async function func_register() {
   if(code.value == ""){
     layer.msg("请输入验证码");
+    return;
+  }else if(code.value.length != 4){
+    layer.msg("验证码错误");
     return;
   }
   await Register(username.value, password.value)
