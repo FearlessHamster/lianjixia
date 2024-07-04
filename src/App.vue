@@ -19,7 +19,7 @@
         <li
           class="item"
           :class="{ active: activeTab === '我的游戏' }"
-          @click="setActiveTab('我的游戏')"
+          @click="room.openroom(user.rid)"
         >
           {{tabTitle}}
         </li>
@@ -78,8 +78,6 @@ function setActiveTab(tabName: string) {
     
     user.toggleLoginStatus();
     return; // 直接返回，不切换标签
-  }else if(tabName == "我的游戏" && user.username!= "") {
-    AddPlayer(user.rid);
   }
 
   if(tabName !== activeTab.value) {

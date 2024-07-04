@@ -1,7 +1,7 @@
 <template>
   <div class="user">
       <!-- 使用 v-if 和 v-else 来根据 user.username 是否有值来决定显示内容 -->
-      <el-popover :visible="visible" placement="bottom" trigger="hover">
+      <el-popover placement="bottom" trigger="hover">
         <el-button v-if="user.username" size="small" type="primary" @click="user.logout()">退出登录</el-button>
         <el-button v-if="!user.username" size="small" type="primary" @click="user.toggleLoginStatus">登录</el-button>
         <template #reference>

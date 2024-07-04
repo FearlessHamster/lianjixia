@@ -4,7 +4,7 @@
         v-for="i in room.paginatedItems"
         class="item"
         >
-            <div class="item-container" @click="openpage(i.rid)">
+            <div class="item-container" @click="room.openroom(i.rid)">
                 <div class="player-count" :style="{ backgroundColor: getPlayerCountBackgroundColor(i.players.length, i.maxplayers) }">
                 {{ i.players.length }}/{{ i.maxplayers }}
                 </div>
@@ -43,9 +43,14 @@ onMounted(() => {
 let setActiveTab = inject("setActiveTab") as Function;
 let tabTitle = inject("tabTitle") as Ref;
 
-async function openpage(index: number) {
-    localStorage.setItem("index", index.toString());
+async function openroom(index: number) {
+    
     setActiveTab("我的游戏");
+    if(user.username ==""){
+      return;
+    }
+    
+    localStorage.setItem("index", index.toString());
     if(await AddPlayer(index)){
       if(index == user.rid) {
           tabTitle.value = "我的游戏";
@@ -56,6 +61,8 @@ async function openpage(index: number) {
     await getRooms();
     
 }
+
+room.openroom = openroom;
 
 function getPlayerCountBackgroundColor(playerCount: number, maxPlayerCount: number): string {
   const ratio = playerCount / maxPlayerCount;

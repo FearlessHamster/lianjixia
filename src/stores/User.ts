@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { LeavePlayer } from "@/utils/CommonServices";
 
 export const useUserStore = defineStore('user', {
     state: () => {
@@ -23,13 +24,16 @@ export const useUserStore = defineStore('user', {
                 this.xp = userinfo.xp;
             }
         },
-        logout() {
+        async logout() {
+            console.log(localStorage.getItem('index'))
+            await LeavePlayer(Number(localStorage.getItem("index")));
             this.username = "";
             this.rid = 0;
             this.xp = 0;
             this.room = 0;
             this.loginstatus = false;
             localStorage.removeItem('userinfo');
+            location.reload();
         }
     }
 })

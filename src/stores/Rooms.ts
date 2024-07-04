@@ -20,7 +20,8 @@ export const useRoomStore = defineStore('rooms', {
                   },
               ]),
             currentPage: ref(1),
-            totalPages: 0
+            totalPages: 0,
+            openroom: async function(room: number) {}
         }
     },
     getters: {
