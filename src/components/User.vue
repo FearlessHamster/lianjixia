@@ -24,7 +24,7 @@
               </div>
               <div>
                 <label for="captcha">验证码:</label>
-                <input type="text" name="captcha" value="" autocomplete="off" class="captcha-input" lay-affix="clear">
+                <input type="text" name="captcha" value="" autocomplete="off" class="captcha-input" lay-affix="clear" v-model="code">
                 <div style="margin-left: 140px;margin-top: -33px">
                   <img style="width: 100px;border-radius: 4px;border: 1px solid #ccc" src="https://www.oschina.net/action/user/captcha" onclick="this.src='https://www.oschina.net/action/user/captcha?t='+ new Date().getTime();">
                 </div>
@@ -44,24 +44,31 @@
 import { useUserStore } from '@/stores/User';
 import { provide, ref } from 'vue';
 import { Login, Register } from '@/utils/CommonServices'
+import { layer } from '@layui/layer-vue';
 
 
 let user = useUserStore();
 let username = ref('');
 let password = ref('');
+let code = ref('');
 
 
 
 async function func_login() {
+  if(code.value == ""){
+    layer.msg("请输入验证码");
+    return;
+  }
   await Login(username.value, password.value)
     
 }
 
 async function func_register() {
-  if(await Register(username.value, password.value)){
-    user.toggleLoginStatus();
-    
+  if(code.value == ""){
+    layer.msg("请输入验证码");
+    return;
   }
+  await Register(username.value, password.value)
 }
 
 
