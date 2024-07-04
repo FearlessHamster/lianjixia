@@ -58,9 +58,10 @@ import { useUserStore } from "./stores/User";
 const room = useRoomStore();
 let user = useUserStore();
 
-
-let userinfo = JSON.parse(Base64.decode(localStorage.getItem('userinfo') ?? "")) ?? [];
-user.setUserinfo(userinfo);
+if(localStorage.getItem('userinfo')) {
+  let userinfo = JSON.parse(Base64.decode(localStorage.getItem('userinfo') ?? "")) ?? [];
+  user.setUserinfo(userinfo);
+}
 
 
 const tabTitle = ref('我的游戏');
@@ -156,7 +157,7 @@ function prevPage() {
   background-color: #40372e;
   border: 100px;
   height: auto; /* 调整高度为自动，以适应内容 */
-  margin: 50px 10px 10px;
+  margin: 70px 10px 10px;
   min-height: 500px; /* 设置最小高度 */
   max-height: 500px;
 }
@@ -195,7 +196,7 @@ function prevPage() {
 .tab {
   position: absolute;
   display: flex;
-  margin-top: 10px;
+  margin-top: 30px;
   margin-left: 10px;
 }
 .tab .item {

@@ -14,6 +14,7 @@
     "@layui/layer-vue": "^2.4.2",
     "@layui/layui-vue": "^2.17.7",
     "axios": "^1.7.2",
+    "element-plus": "^2.7.6",
     "js-base64": "^3.7.7",
     "js-md5": "^0.8.3",
     "layui": "^2.9.13",

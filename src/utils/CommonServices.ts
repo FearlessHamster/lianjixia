@@ -20,7 +20,6 @@ export async function Login(username: string, password: string) {
     layer.msg(data.msg, { time: 1000 })
     
     if(data.code == 200) {
-        console.log(data);
         user.toggleLoginStatus();
         user.username = data.username;
         user.rid = data.rid;
@@ -47,7 +46,10 @@ export async function Register(username: string, password: string) {
     layer.msg(data.msg, { time: 1000 })
     if(data.code == 200) {
         user.toggleLoginStatus();
-        localStorage.setItem('token', data.token);
+        user.username = data.username;
+        user.rid = data.rid;
+        user.xp = data.xp;
+        localStorage.setItem('userinfo', Base64.encode(JSON.stringify({username: username, rid: data.rid, xp: data.xp})));
         return true;
     }else{
         return false;

@@ -22,6 +22,14 @@ export const useUserStore = defineStore('user', {
                 this.rid = userinfo.rid;
                 this.xp = userinfo.xp;
             }
+        },
+        logout() {
+            this.username = "";
+            this.rid = 0;
+            this.xp = 0;
+            this.room = 0;
+            this.loginstatus = false;
+            localStorage.removeItem('userinfo');
         }
     }
 })

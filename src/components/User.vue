@@ -1,7 +1,13 @@
 <template>
   <div class="user">
       <!-- 使用 v-if 和 v-else 来根据 user.username 是否有值来决定显示内容 -->
-      <p style="font-size: 15px" @click="user.toggleLoginStatus" >{{ user.username || '未登录' }}</p>
+      <el-popover :visible="visible" placement="bottom" trigger="hover">
+        <el-button v-if="user.username" size="small" type="primary" @click="user.logout()">退出登录</el-button>
+        <el-button v-if="!user.username" size="small" type="primary" @click="user.toggleLoginStatus">登录</el-button>
+        <template #reference>
+          <p style="font-size: 15px" >{{ user.username || '未登录' }}</p>
+        </template>
+      </el-popover>
       <!-- 当 user.username 有值时，显示等级 -->
       <div class="level" v-if="user.username != ''">
           <a style="color: #fff; font-size: 14px; width: 100%">LV0</a>
@@ -58,6 +64,8 @@ async function func_register() {
   }
 }
 
+
+
 </script>
 
 <style scoped>
@@ -65,7 +73,7 @@ async function func_register() {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-top: -75px;
+  margin-top: -65px;
   margin-right: 15px;
 }
 
@@ -78,7 +86,7 @@ async function func_register() {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 4px;
   margin-left: 5px;
   font-size: 14px;
   color: #fff;
