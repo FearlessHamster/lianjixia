@@ -71,6 +71,7 @@
                   <button v-if="index == user.rid" style="margin: 10px; width: 100px; height: 32px">
                     修改游戏
                   </button>
+                  
                   <button v-if="index == user.rid" style="margin: 10px; width: 100px; height: 32px">
                     更换背景
                   </button>
