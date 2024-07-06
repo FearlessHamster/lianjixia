@@ -259,7 +259,7 @@ async function Leave() {
   width: 200px;
   height: 500px;
   border-radius: 50%;
-  margin-left: 700px;
+  margin-left: 680px;
   margin-top: -570px;
 }
 

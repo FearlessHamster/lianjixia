@@ -65,7 +65,6 @@ common.connectWebsocket();
 common.startHeartbeat();
 
 common.websocket.onmessage = (event) =>{
-  console.log(event.data);
   if(event.data == "pong"){
     console.log(event.data)
     return;
