@@ -54,9 +54,58 @@ import { Base64 } from 'js-base64';
 import { LeavePlayer, AddPlayer } from "@/utils/CommonServices";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "./stores/User";
+import { useCommonStore } from "./stores/Common";
+
+
 
 const room = useRoomStore();
-let user = useUserStore();
+const user = useUserStore();
+const common = useCommonStore();
+common.connectWebsocket();
+common.startHeartbeat();
+
+common.websocket.onmessage = (event) =>{
+  console.log(event.data);
+  if(event.data == "pong"){
+    console.log(event.data)
+    return;
+  }else if(event.data == "connected"){
+    common.sendWebsocket("getroom")
+    return;
+
+  }
+  const data = JSON.parse(event.data);
+  
+  
+  switch (data.type) {
+    case "login":
+      if(data.msg == "success"){
+        user.toggleLoginStatus();
+        user.username = data.data.username;
+        user.rid = data.data.rid;
+        user.xp = data.data.xp;
+        localStorage.setItem('userinfo',Base64.encode(JSON.stringify(data.data)));
+        
+      }
+      break;
+    case "register":
+      if(data.msg == "success"){
+        user.toggleLoginStatus();
+        user.username = data.data.username;
+        user.rid = data.data.rid;
+        user.xp = data.data.xp;
+        localStorage.setItem('userinfo',Base64.encode(JSON.stringify(data.data)));
+        
+      }
+      break;
+    case "room":
+      room.rooms = data.data;
+    default:
+      break;
+  }
+  
+  
+}
 
 if(localStorage.getItem('userinfo')) {
   let userinfo = JSON.parse(Base64.decode(localStorage.getItem('userinfo') ?? "")) ?? [];

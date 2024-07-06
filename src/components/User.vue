@@ -16,15 +16,15 @@
           <div @click.stop>
               <div>
                   <label for="username">用户名:</label>
-                  <input type="text" id="username" v-model="username">
+                  <input type="text" id="username" value="fearless" v-model="username">
               </div>
               <div>
                   <label for="password"> 密 码 : </label>
-                  <input type="password" id="password" v-model="password">
+                  <input type="password" id="password" value="crx6623128" v-model="password">
               </div>
               <div>
                 <label for="captcha">验证码:</label>
-                <input type="text" name="captcha" value="" autocomplete="off" class="captcha-input" lay-affix="clear" v-model="code">
+                <input type="text" name="captcha" value="aaaa" autocomplete="off" class="captcha-input" lay-affix="clear" v-model="code">
                 <div style="margin-left: 140px;margin-top: -33px">
                   <img style="width: 100px;border-radius: 4px;border: 1px solid #ccc" src="https://www.oschina.net/action/user/captcha" onclick="this.src='https://www.oschina.net/action/user/captcha?t='+ new Date().getTime();">
                 </div>

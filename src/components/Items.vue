@@ -8,7 +8,7 @@
                 <div class="player-count" :style="{ backgroundColor: getPlayerCountBackgroundColor(i.players.length, i.maxplayers) }">
                 {{ i.players.length }}/{{ i.maxplayers }}
                 </div>
-                <template v-if="i.viplevel === 3">
+                <template v-if="i.viplevel == 3">
                 <img
                     src="@/assets/vip3.png"
                     alt="VIP 3"
@@ -35,10 +35,6 @@ const room = useRoomStore();
 const user = useUserStore()
 
 
-onMounted(() => {
-  getRooms();
-});
-
 
 let setActiveTab = inject("setActiveTab") as Function;
 let tabTitle = inject("tabTitle") as Ref;
@@ -51,12 +47,11 @@ async function openroom(index: number) {
     }
     
     localStorage.setItem("index", index.toString());
-    if(await AddPlayer(index)){
-      if(index == user.rid) {
-          tabTitle.value = "我的游戏";
-      }else{
-          tabTitle.value = "当前加入";
-      }
+    AddPlayer(index)
+    if(index == user.rid) {
+        tabTitle.value = "我的游戏";
+    }else{
+        tabTitle.value = "当前加入";
     }
     await getRooms();
     
