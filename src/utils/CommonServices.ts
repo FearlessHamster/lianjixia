@@ -1,9 +1,4 @@
-import axios from "axios";
-import md5 from "js-md5";
-import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "@/stores/User";
-import * as Base64 from "js-base64";
-import { layer } from "@layui/layui-vue"
 import { useCommonStore } from "@/stores/Common";
 
 
@@ -27,6 +22,10 @@ export async function getRooms() {
 export function AddPlayer(rid:number) {
     let common = useCommonStore();
     let user = useUserStore();
+    if(user.rid == -1){
+        user.toggleLoginStatus();
+        return;
+    }
     common.sendWebsocket("join " + rid + " " + user.username)
 }
 

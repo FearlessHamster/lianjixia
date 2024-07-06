@@ -42,9 +42,10 @@ let tabTitle = inject("tabTitle") as Ref;
 async function openroom(index: number) {
     
     setActiveTab("我的游戏");
-    if(user.username ==""){
+    if(user.rid == -1){
       return;
     }
+    
     
     localStorage.setItem("index", index.toString());
     AddPlayer(index)

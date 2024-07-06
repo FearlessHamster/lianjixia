@@ -45,7 +45,7 @@
 
 
 <script setup lang="ts">
-import { ref, computed, provide, onMounted, inject } from "vue";
+import { ref, provide } from "vue";
 import Title from "@/components/icons/TitleIcon.vue";
 import Rooms from "@/components/Rooms.vue";
 import Items from "@/components/Items.vue";
@@ -55,6 +55,7 @@ import { LeavePlayer, AddPlayer } from "@/utils/CommonServices";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "./stores/User";
 import { useCommonStore } from "./stores/Common";
+import { layer } from "@layui/layer-vue";
 
 
 
@@ -85,6 +86,8 @@ common.websocket.onmessage = (event) =>{
         user.xp = data.data.xp;
         localStorage.setItem('userinfo',Base64.encode(JSON.stringify(data.data)));
         
+      }else{
+        layer.msg("帐号密码错误");
       }
       break;
     case "register":
@@ -95,6 +98,8 @@ common.websocket.onmessage = (event) =>{
         user.xp = data.data.xp;
         localStorage.setItem('userinfo',Base64.encode(JSON.stringify(data.data)));
         
+      }else{
+        layer.msg("用户已存在");
       }
       break;
     case "room":
