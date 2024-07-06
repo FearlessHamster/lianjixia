@@ -8,7 +8,7 @@
               基本信息
             </li>
             <li
-              v-if="tabTitle === '我的游戏'"
+              v-if="index == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '控制台' }"
               @click="setActiveTab2('控制台')"
@@ -16,7 +16,7 @@
               控制台
             </li>
             <li
-              v-if="tabTitle === '我的游戏'"
+              v-if="index == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '设置' }"
               @click="setActiveTab2('设置')"
@@ -24,7 +24,7 @@
               设置
             </li>
             <li
-              v-if="tabTitle === '我的游戏'"
+              v-if="index == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '插件' }"
               @click="setActiveTab2('插件')"
@@ -32,7 +32,7 @@
               插件
             </li>
             <li
-              v-if="tabTitle === '我的游戏'"
+              v-if="index == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '模组' }"
               @click="setActiveTab2('模组')"

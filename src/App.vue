@@ -66,6 +66,8 @@ common.connectWebsocket();
 common.startHeartbeat();
 
 common.websocket.onmessage = (event) =>{
+  console.log(event.data);
+  
   if(event.data == "pong"){
     console.log(event.data)
     return;
@@ -97,13 +99,17 @@ common.websocket.onmessage = (event) =>{
         user.rid = data.data.rid;
         user.xp = data.data.xp;
         localStorage.setItem('userinfo',Base64.encode(JSON.stringify(data.data)));
-        
       }else{
         layer.msg("用户已存在");
       }
       break;
     case "room":
-      room.rooms = data.data;
+      if(data.msg == "success"){
+        room.rooms = data.data;
+      }else{
+        setActiveTab('国服大厅');
+        layer.msg(data.msg);
+      }
     default:
       break;
   }
@@ -159,6 +165,11 @@ function prevPage() {
     room.currentPage--;
   }
 }
+
+window.addEventListener('beforeunload', (event) => {
+  // Call the setActiveTab function with '国服大厅' as the argument
+  setActiveTab('国服大厅');
+})
 
 </script>
 

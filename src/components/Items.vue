@@ -1,10 +1,10 @@
 <template>
     <div class="items-container">
         <div
-        v-for="i in room.paginatedItems"
+        v-for="(i, index) in room.paginatedItems"
         class="item"
         >
-            <div class="item-container" @click="room.openroom(i.rid)">
+            <div class="item-container" @click="room.openroom(index)">
                 <div class="player-count" :style="{ backgroundColor: getPlayerCountBackgroundColor(i.players.length, i.maxplayers) }">
                 {{ i.players.length }}/{{ i.maxplayers }}
                 </div>

@@ -10,7 +10,7 @@
       </el-popover>
       <!-- 当 user.username 有值时，显示等级 -->
       <div class="level" v-if="user.username != ''">
-          <a style="color: #fff; font-size: 14px; width: 100%">LV0</a>
+          <a style="color: #fff; font-size: 14px; width: 100%; margin-left: 5px;">LV0</a>
       </div>
       <div v-if="user.loginstatus" class="login-modal">
           <div @click.stop>

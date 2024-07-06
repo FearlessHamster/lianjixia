@@ -3,13 +3,14 @@ import { defineStore } from "pinia";
 export const useCommonStore = defineStore('common', {
     state: () => {
         return {
-            websocket: new WebSocket("wss://api.lianjixia.run"),
+            ws: "ws://localhost:4000",
+            websocket: new WebSocket("ws://localhost:4000"),
             heartbeatInterval: 0
         }
     },
     actions: {
         connectWebsocket() {
-            this.websocket = new WebSocket("wss://api.lianjixia.run");
+            this.websocket = new WebSocket(this.ws);
             console.log("Connecting to websocket");
             
         },

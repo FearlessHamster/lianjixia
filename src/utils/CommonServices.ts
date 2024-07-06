@@ -1,15 +1,24 @@
 import { useUserStore } from "@/stores/User";
 import { useCommonStore } from "@/stores/Common";
+import { layer } from "@layui/layer-vue";
 
 
 //登录
 export async function Login(username: string, password: string) {
+    if(username == "" || password == ""){
+        layer.msg("用户名或密码不能为空");
+        return;
+    }
     let common = useCommonStore();
     common.sendWebsocket("login " + username + " " + password)
     
 }
 
 export async function Register(username: string, password: string) {
+    if(username == "" || password == ""){
+        layer.msg("用户名或密码不能为空");
+        return;
+    }
     let common = useCommonStore();
     common.sendWebsocket("register " + username + " " + password)
 }
