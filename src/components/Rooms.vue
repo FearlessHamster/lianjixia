@@ -1,5 +1,5 @@
 <template>
-    <ul class="tab" style="margin-top: 10px;">
+    <ul class="tab" style="margin-top: 10px; width: 500px; min-width: 500px;">
             <li
               class="item"
               :class="{ active2: activeTab2 === '基本信息' }"
@@ -67,11 +67,11 @@
                     {{ item.title }}
                   </div>
                 </div>
-                <div class="pagination-controls" style="margin-top: 30px;margin-left: -5px; display: grid">
-                  <button style="margin: 10px; width: 100px; height: 32px">
+                <div class="pagination-controls" style="margin-top: 30px;margin-left: -5px; display: grid;width: 130px; height: 124px;">
+                  <button v-if="index == user.rid" style="margin: 10px; width: 100px; height: 32px">
                     修改游戏
                   </button>
-                  <button style="margin: 10px; width: 100px; height: 32px">
+                  <button v-if="index == user.rid" style="margin: 10px; width: 100px; height: 32px">
                     更换背景
                   </button>
                 </div>
@@ -197,6 +197,16 @@ async function Leave() {
 </script>
 
 <style scoped>
+
+.info {
+  margin-left: 160px;
+  margin-top: -290px;
+  color: #d8d7d5;
+  width: 500px;
+  height: 500px;
+  font-size: 15px;
+}
+
 
 .item-container {
   position: relative; /* 使容器相对定位 */

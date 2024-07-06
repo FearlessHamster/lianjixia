@@ -184,18 +184,10 @@ window.addEventListener('beforeunload', (event) => {
   cursor: not-allowed;
 }
 
-.info {
-  margin-left: 160px;
-  margin-top: -290px;
-  color: #d8d7d5;
-  width: 500px;
-  height: 500px;
-  font-size: 15px;
-}
 
 .box {
-  width: 54%;
-  height: 64%;
+  width: 880px;
+  height: 615px;
   position: fixed;
   background-color: #4d433a;
 }
