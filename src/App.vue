@@ -51,7 +51,7 @@ import Rooms from "@/components/Rooms.vue";
 import Items from "@/components/Items.vue";
 import User from "@/components/User.vue";
 import { Base64 } from 'js-base64';
-import { LeavePlayer, AddPlayer, Login } from "@/utils/CommonServices";
+import { LeavePlayer, Login } from "@/utils/CommonServices";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "./stores/User";
 import { useCommonStore } from "./stores/Common";
@@ -66,7 +66,6 @@ common.connectWebsocket();
 common.startHeartbeat();
 
 common.websocket.onmessage = (event) =>{
-  console.log(event.data);
   const data = JSON.parse(event.data);
   
   switch (data.type) {
@@ -98,7 +97,7 @@ common.websocket.onmessage = (event) =>{
       console.log(data.msg);
       if(data.msg == "success"){
         room.rooms = data.data;
-        
+        room.totalPages = Math.ceil(data.data.length / 18);
         
       }else{
         setActiveTab('国服大厅');
@@ -153,7 +152,7 @@ function setActiveTab(tabName: string) {
     }
   }
   activeTab.value = tabName;
-};
+}
 
 provide('setActiveTab',setActiveTab)
 
@@ -170,7 +169,7 @@ function prevPage() {
   }
 }
 
-window.addEventListener('beforeunload', (event) => {
+window.addEventListener('beforeunload', () => {
   // Call the setActiveTab function with '国服大厅' as the argument
   if(activeTab.value == "我的游戏"){
     LeavePlayer(Number(localStorage.getItem("index")?? "-1"));
@@ -196,7 +195,7 @@ window.addEventListener('beforeunload', (event) => {
 
 
 .box {
-  width: 880px;
+  width: 885px;
   height: 615px;
   position: fixed;
   background-color: #4d433a;

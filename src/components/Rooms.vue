@@ -46,7 +46,7 @@
               v-if="activeTab2 === '基本信息'"
             >
               <div class="itembox3" v-if="item">
-                <div style="width: 130 !important;" class="item-container">
+                <div style="width: 130px !important;" class="item-container">
                   <template v-if="item.viplevel == 1">
                   <img
                       src="@/assets/vip1.png"
@@ -194,12 +194,10 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, computed, defineProps, inject, type Ref } from "vue";
+import { watch, ref, computed, inject, type Ref } from "vue";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "@/stores/User";
 import { useCommonStore } from "@/stores/Common";
-import { LeavePlayer } from "@/utils/CommonServices";
-import { Base64 } from "js-base64";
 import { layer } from "@layui/layer-vue";
 
 
@@ -225,7 +223,7 @@ const forminfo = ref({
 const imageUrl = ref<string | null>(null);
 const clientCoreOptions = ref(common.clientcore.filter(item => item.version === forminfo.value.servercore));
 
-watch(() => forminfo.value.servercore, (newValue, oldValue) =>{
+watch(() => forminfo.value.servercore, (newValue) =>{
   const serverCoreArray = newValue.split('|');
   clientCoreOptions.value = common.clientcore.filter(item => item.version === serverCoreArray[1]);
   console.log(clientCoreOptions.value);
@@ -258,21 +256,9 @@ const ChangeInfo = () => {
   
 }
 
-let item = ref({
-            rid: 0,
-            title: "联机大厅",
-            img: "",
-            dec: "房主很懒，什么都没写",
-            servercore: "null",
-            clientcore: "null",
-            maxplayers: 0,
-            viplevel: 0,
-            players: [],
-            plugins: [],
-            mods: []
-          });
+let item = ref<any>({});
 
-watch(() => room.rooms, (newVal, oldVal) => {
+watch(() => room.rooms, (newVal) => {
   item.value = newVal[0];
 
   // 例如，重新计算某些值或调用另一个函数
@@ -367,7 +353,7 @@ if(imageUrl.value){
 .playerlist {
   border: 1px solid #4D433A;
   height: 420px;
-  max-height: 420;
+  max-height: 420px;
   overflow-y: auto;
   overflow-x: hidden;
   width:170px;
