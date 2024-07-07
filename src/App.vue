@@ -51,7 +51,7 @@ import Rooms from "@/components/Rooms.vue";
 import Items from "@/components/Items.vue";
 import User from "@/components/User.vue";
 import { Base64 } from 'js-base64';
-import { LeavePlayer, AddPlayer } from "@/utils/CommonServices";
+import { LeavePlayer, AddPlayer, Login } from "@/utils/CommonServices";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "./stores/User";
 import { useCommonStore } from "./stores/Common";
@@ -67,50 +67,42 @@ common.startHeartbeat();
 
 common.websocket.onmessage = (event) =>{
   console.log(event.data);
-  
-  if(event.data == "pong"){
-    console.log(event.data)
-    return;
-  }else if(event.data == "connected"){
-    common.sendWebsocket("getroom")
-    common.sendWebsocket("getservercore")
-    common.sendWebsocket("getclientcore")
-    return;
-
-  }
   const data = JSON.parse(event.data);
   
-  
   switch (data.type) {
+    case "connected":
+      common.sendWebsocket("getroom",{})
+      common.sendWebsocket("getservercore",{})
+      common.sendWebsocket("getclientcore",{})
+      const logindata = Base64.decode(localStorage.getItem("token") as string).split(" ");
+      Login(logindata[0],logindata[1]);
+      break;
+    case "ping":
+      console.log(data.msg);
+      break;
     case "login":
       if(data.msg == "success"){
-        user.toggleLoginStatus();
+        if(user.loginstatus){
+          user.toggleLoginStatus();
+        }
         user.username = data.data.username;
         user.rid = data.data.rid;
         user.xp = data.data.xp;
-        localStorage.setItem('userinfo',Base64.encode(JSON.stringify(data.data)));
+        localStorage.setItem("userinfo", Base64.encode(JSON.stringify(data.data)));
         
       }else{
-        layer.msg("帐号密码错误");
-      }
-      break;
-    case "register":
-      if(data.msg == "success"){
-        user.toggleLoginStatus();
-        user.username = data.data.username;
-        user.rid = data.data.rid;
-        user.xp = data.data.xp;
-        localStorage.setItem('userinfo',Base64.encode(JSON.stringify(data.data)));
-      }else{
-        layer.msg("用户已存在");
+        layer.msg("帐号密码错误",{time: 1000});
       }
       break;
     case "room":
+      console.log(data.msg);
       if(data.msg == "success"){
         room.rooms = data.data;
+        
+        
       }else{
         setActiveTab('国服大厅');
-        layer.msg(data.msg);
+        layer.msg(data.msg,{time: 1000});
       }
       break;
     case "servercore":
@@ -140,10 +132,9 @@ const tabTitle = ref('我的游戏');
 
 provide('tabTitle',tabTitle)
 
-const activeTab = ref("国服大厅"); // 默认激活的项
+const activeTab = ref("国服大厅");
 
 function setActiveTab(tabName: string) {
-  // 如果尝试切换到“我的游戏”且用户名为空，则不执行任何操作
   if(tabName === "我的游戏" && user.username == "") {
     // 可以在这里添加一个提示，例如使用alert或者一个自定义的提示组件
     console.log(user.username);
@@ -156,7 +147,7 @@ function setActiveTab(tabName: string) {
     if(tabName == "国服大厅") {
       tabTitle.value = "我的游戏";
       
-      LeavePlayer(Number(localStorage.getItem("index")?? "0"));
+      LeavePlayer(Number(localStorage.getItem("index")?? "-1"));
       
       localStorage.setItem("index",user.rid.toString());
     }
@@ -181,7 +172,9 @@ function prevPage() {
 
 window.addEventListener('beforeunload', (event) => {
   // Call the setActiveTab function with '国服大厅' as the argument
-  setActiveTab('国服大厅');
+  if(activeTab.value == "我的游戏"){
+    LeavePlayer(Number(localStorage.getItem("index")?? "-1"));
+  }
 })
 
 </script>

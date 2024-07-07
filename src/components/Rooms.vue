@@ -47,13 +47,29 @@
             >
               <div class="itembox3" v-if="item">
                 <div style="width: 130 !important;" class="item-container">
-                  <template v-if="item.viplevel === 3">
-                    <img
-                      src="@/assets/vip3.png"
-                      alt="VIP 3"
+                  <template v-if="item.viplevel == 1">
+                  <img
+                      src="@/assets/vip1.png"
+                      :alt="`VIP {{ item.viplevel }}`"
                       class="vip-icon"
                       draggable="false"
-                    />
+                  />
+                  </template>
+                  <template v-if="item.viplevel == 2">
+                  <img
+                      src="@/assets/vip2.png"
+                      :alt="`VIP {{ item.viplevel }}`"
+                      class="vip-icon"
+                      draggable="false"
+                  />
+                  </template>
+                  <template v-if="item.viplevel == 3">
+                  <img
+                      src="@/assets/vip3.png"
+                      :alt="`VIP {{ item.viplevel }}`"
+                      class="vip-icon"
+                      draggable="false"
+                  />
                   </template>
                   <img
                     style="width: 130px; height: 130px"
@@ -106,7 +122,15 @@
                     修改游戏
                   </button>
                   
-                  <button v-if="index == user.rid" style="margin: 10px; width: 100px; height: 32px">
+                  <el-dialog v-model="img" title="修改背景">
+                    <div>
+                      <img style="width: 130px;height: 130px" v-if="imageUrl" :src="imageUrl" alt="Uploaded Image" />
+                      <input type="file" @change="onFileChange" />
+                      <input type="button" value="开始上传" @click="upload">
+                    </div>
+                  </el-dialog>
+
+                  <button v-if="index == user.rid" @click="img = true" style="margin: 10px; width: 100px; height: 32px">
                     更换背景
                   </button>
                 </div>
@@ -176,6 +200,9 @@ import { useUserStore } from "@/stores/User";
 import { useCommonStore } from "@/stores/Common";
 import { LeavePlayer } from "@/utils/CommonServices";
 import { Base64 } from "js-base64";
+import { layer } from "@layui/layer-vue";
+
+
 
 const room = useRoomStore();
 const user = useUserStore();
@@ -188,14 +215,14 @@ const players = ref([]);
 const tabTitle = inject("tabTitle") as Ref;
 const setActiveTab = inject("setActiveTab") as Function;
 const info = ref(false);
+const img = ref(false);
 const forminfo = ref({
   title: "",
   dec: "",
   servercore: "",
   clientcore: ""
 })
-
-
+const imageUrl = ref<string | null>(null);
 const clientCoreOptions = ref(common.clientcore.filter(item => item.version === forminfo.value.servercore));
 
 watch(() => forminfo.value.servercore, (newValue, oldValue) =>{
@@ -208,53 +235,46 @@ watch(() => forminfo.value.servercore, (newValue, oldValue) =>{
 
 const ChangeInfo = () => {
   if(
-    forminfo.value.servercore.trim() != "" && 
-    forminfo.value.clientcore.trim() != "" && 
-    forminfo.value.title.trim() != "" &&
-    forminfo.value.dec.trim() != ""
+    forminfo.value.servercore.trim() == "" && 
+    forminfo.value.clientcore.trim() == "" && 
+    forminfo.value.title.trim() == "" &&
+    forminfo.value.dec.trim() == ""
   ){
-
+    info.value = false;
+    return;
+  }
   
     const serverCoreArray = forminfo.value.servercore.split('|');
     const clientCoreArray = forminfo.value.clientcore.split('|');
-    const data = JSON.stringify({
+    const data = {
       rid: user.rid,
-      title: forminfo.value.title.trim(),
-      dec: forminfo.value.dec.trim(),
-      servercore: serverCoreArray[0],
-      clientcore: clientCoreArray[0]
-    })
-    common.sendWebsocket("changeinfo "+Base64.encode(data));
-  }
-
-
+      title: forminfo.value.title.trim() ?? room.rooms[user.rid].title,
+      dec: forminfo.value.dec.trim() ?? room.rooms[user.rid].dec,
+      servercore: serverCoreArray[0] ?? room.rooms[user.rid].servercore,
+      clientcore: clientCoreArray[0] ?? room.rooms[user.rid].clientcore
+    }
+    common.sendWebsocket("changeinfo",data)
+    info.value = false;
+  
 }
-
-
 
 let item = ref({
             rid: 0,
-            title: "",
+            title: "联机大厅",
             img: "",
-            dec: "",
-            servercore: "",
-            clientcore: "",
-            players: [],
+            dec: "房主很懒，什么都没写",
+            servercore: "null",
+            clientcore: "null",
             maxplayers: 0,
             viplevel: 0,
+            players: [],
             plugins: [],
             mods: []
           });
 
 watch(() => room.rooms, (newVal, oldVal) => {
-  // 这里是你想要执行的函数，每当 room.rooms 更新时都会调用
-  for (let i = 0; i < room.rooms.length; i++) {
-  if (room.rooms[i].rid == index) {
-    room.rooms[i].players.join(user.username);
-    item.value = room.rooms[i];
-    break;
-  }
-}
+  item.value = newVal[0];
+
   // 例如，重新计算某些值或调用另一个函数
 }, {
   deep: true // 使用深度监听，以便于监听数组或对象内部值的变化
@@ -273,12 +293,41 @@ function setActiveTab2(tabName: string) {
 }
 
 async function Leave() {
-    setActiveTab('国服大厅');
+  setActiveTab('国服大厅');
+}
+
+const onFileChange = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imageUrl.value = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const upload = () => {
+if(imageUrl.value){
+  img.value = false;
+  if(imageUrl.value.length > 300*1024){
+    layer.msg("超出最大图片限制(300kb)限制",{time: 1000})
+    return
+  }
+  common.sendWebsocket("uploadimg",{
+    rid: user.rid,
+    img: imageUrl.value
+  })
+}
 }
 
 </script>
 
 <style scoped>
+
+:deep(.el-form-item__label) {
+  color: #d8d7d5;
+}
 
 .info {
   margin-left: 160px;

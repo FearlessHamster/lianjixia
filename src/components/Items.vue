@@ -1,17 +1,33 @@
 <template>
     <div class="items-container">
         <div
-        v-for="(i, index) in room.paginatedItems"
+        v-for="i in room.paginatedItems"
         class="item"
         >
-            <div class="item-container" @click="room.openroom(index)">
+            <div class="item-container" @click="room.openroom(i.rid)">
                 <div class="player-count" :style="{ backgroundColor: getPlayerCountBackgroundColor(i.players.length, i.maxplayers) }">
                 {{ i.players.length }}/{{ i.maxplayers }}
                 </div>
+                <template v-if="i.viplevel == 1">
+                <img
+                    src="@/assets/vip1.png"
+                    :alt="`VIP {{ item.viplevel }}`"
+                    class="vip-icon"
+                    draggable="false"
+                />
+                </template>
+                <template v-if="i.viplevel == 2">
+                <img
+                    src="@/assets/vip2.png"
+                    :alt="`VIP {{ item.viplevel }}`"
+                    class="vip-icon"
+                    draggable="false"
+                />
+                </template>
                 <template v-if="i.viplevel == 3">
                 <img
                     src="@/assets/vip3.png"
-                    alt="VIP 3"
+                    :alt="`VIP {{ item.viplevel }}`"
                     class="vip-icon"
                     draggable="false"
                 />

@@ -26,13 +26,16 @@ export const useCommonStore = defineStore('common', {
         disconnectWebsocket() {
             this.websocket.close();
         },
-        sendWebsocket(msg: string) {
-            this.websocket.send(msg);
+        sendWebsocket(type: string, data: any) {
+            this.websocket.send(JSON.stringify({
+                type: type,
+                data: data
+            }));
         },
         startHeartbeat() {
             this.heartbeatInterval = setInterval(() => {
               if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
-                this.websocket.send("ping"); // 发送心跳消息
+                this.sendWebsocket("ping",{}); // 发送心跳消息
               }
             }, 10000); // 每10秒发送一次心跳
         },

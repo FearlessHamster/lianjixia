@@ -82,6 +82,7 @@ async function func_register() {
 </script>
 
 <style scoped>
+
 .user {
   display: flex;
   justify-content: flex-end;
