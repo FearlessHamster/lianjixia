@@ -2,10 +2,19 @@ import { defineStore } from "pinia";
 
 export const useCommonStore = defineStore('common', {
     state: () => {
+        const ws = "ws://localhost:4000";
         return {
-            ws: "ws://localhost:4000",
-            websocket: new WebSocket("ws://localhost:4000"),
-            heartbeatInterval: 0
+            ws: ws,
+            websocket: new WebSocket(ws),
+            heartbeatInterval: 0,
+            servercore: [{
+                name: "",
+                version: ""
+            }],
+            clientcore: [{
+                name: "",
+                version: ""
+            }],
         }
     },
     actions: {

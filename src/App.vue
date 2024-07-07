@@ -73,6 +73,8 @@ common.websocket.onmessage = (event) =>{
     return;
   }else if(event.data == "connected"){
     common.sendWebsocket("getroom")
+    common.sendWebsocket("getservercore")
+    common.sendWebsocket("getclientcore")
     return;
 
   }
@@ -110,6 +112,17 @@ common.websocket.onmessage = (event) =>{
         setActiveTab('国服大厅');
         layer.msg(data.msg);
       }
+      break;
+    case "servercore":
+      if(data.msg == "success"){
+        common.servercore = data.data;
+      }
+      break;
+    case "clientcore":
+      if(data.msg == "success"){
+        common.clientcore = data.data;
+      }
+      break;
     default:
       break;
   }
@@ -174,6 +187,10 @@ window.addEventListener('beforeunload', (event) => {
 </script>
 
 <style>
+
+.lianjixia {
+  background-color: #40372e;
+}
 
 .layui-layer-msg {
   margin-top: -180px;

@@ -68,7 +68,41 @@
                   </div>
                 </div>
                 <div class="pagination-controls" style="margin-top: 30px;margin-left: -5px; display: grid;width: 130px; height: 124px;">
-                  <button v-if="index == user.rid" style="margin: 10px; width: 100px; height: 32px">
+                  <el-dialog class="lianjixia" v-model="info" title="修改信息" width="300" draggable>
+                    <el-form ref="formRef" :model="forminfo" label-width="auto"> 
+                        <el-form-item label="标题" prop="title">
+                          <el-input v-model="forminfo.title" :placeholder="room.rooms[user.rid].title" />
+                        </el-form-item>
+                        <el-form-item label="介绍" prop="dec">
+                          <el-input v-model="forminfo.dec" :rows="5" type="textarea" :placeholder="room.rooms[user.rid].dec" />
+                        </el-form-item>
+                        <el-form-item label="服务器核心" prop="servercore">
+                          <el-select v-model="forminfo.servercore" placeholder="请选择">
+                            <el-option v-for="item in common.servercore"
+                            :key="item.name"
+                            :label="item.name"
+                            :value="item.name +'|'+item.version" />
+                          </el-select>
+                        </el-form-item>
+                        <el-form-item label="客户端核心" prop="clientcore">
+                          <el-select v-model="forminfo.clientcore" placeholder="请选择">
+                            <el-option v-for="item in clientCoreOptions"
+                            :key="item.name"
+                            :label="item.name"
+                            :value="item.name +'|'+item.version" />
+                          </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-button type="primary" @click="ChangeInfo">
+                            修改
+                          </el-button>
+                          <el-button type="primary" @click="info = false">
+                            取消
+                          </el-button>
+                        </el-form-item>
+                    </el-form>
+                  </el-dialog>
+                  <button v-if="index == user.rid" @click="info = true" style="margin: 10px; width: 100px; height: 32px">
                     修改游戏
                   </button>
                   
@@ -139,10 +173,13 @@
 import { watch, ref, computed, defineProps, inject, type Ref } from "vue";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "@/stores/User";
+import { useCommonStore } from "@/stores/Common";
 import { LeavePlayer } from "@/utils/CommonServices";
+import { Base64 } from "js-base64";
 
 const room = useRoomStore();
 const user = useUserStore();
+const common = useCommonStore();
 
 let index = Number(localStorage.getItem("index"));
 const activeTab2 = ref("基本信息"); // 默认激活的项
@@ -150,6 +187,50 @@ const players = ref([]);
 
 const tabTitle = inject("tabTitle") as Ref;
 const setActiveTab = inject("setActiveTab") as Function;
+const info = ref(false);
+const forminfo = ref({
+  title: "",
+  dec: "",
+  servercore: "",
+  clientcore: ""
+})
+
+
+const clientCoreOptions = ref(common.clientcore.filter(item => item.version === forminfo.value.servercore));
+
+watch(() => forminfo.value.servercore, (newValue, oldValue) =>{
+  const serverCoreArray = newValue.split('|');
+  clientCoreOptions.value = common.clientcore.filter(item => item.version === serverCoreArray[1]);
+  console.log(clientCoreOptions.value);
+  console.log(newValue);
+  
+})
+
+const ChangeInfo = () => {
+  if(
+    forminfo.value.servercore.trim() != "" && 
+    forminfo.value.clientcore.trim() != "" && 
+    forminfo.value.title.trim() != "" &&
+    forminfo.value.dec.trim() != ""
+  ){
+
+  
+    const serverCoreArray = forminfo.value.servercore.split('|');
+    const clientCoreArray = forminfo.value.clientcore.split('|');
+    const data = JSON.stringify({
+      rid: user.rid,
+      title: forminfo.value.title.trim(),
+      dec: forminfo.value.dec.trim(),
+      servercore: serverCoreArray[0],
+      clientcore: clientCoreArray[0]
+    })
+    common.sendWebsocket("changeinfo "+Base64.encode(data));
+  }
+
+
+}
+
+
 
 let item = ref({
             rid: 0,
@@ -283,4 +364,6 @@ async function Leave() {
   margin-top: 80px;
   margin-left: 10px;
 }
+
+
 </style>
