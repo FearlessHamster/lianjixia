@@ -48,28 +48,42 @@
               <div class="itembox3" v-if="item">
                 <div style="width: 130px !important;" class="item-container">
                   <template v-if="item.viplevel == 1">
-                  <img
-                      src="@/assets/vip1.png"
-                      :alt="`VIP {{ item.viplevel }}`"
-                      class="vip-icon"
-                      draggable="false"
-                  />
+                    <img
+                        src="@/assets/vip1.png"
+                        :alt="`VIP {{ item.viplevel }}`"
+                        class="vip-icon"
+                        draggable="false"
+                    />
                   </template>
                   <template v-if="item.viplevel == 2">
-                  <img
-                      src="@/assets/vip2.png"
-                      :alt="`VIP {{ item.viplevel }}`"
-                      class="vip-icon"
-                      draggable="false"
-                  />
+                    <img
+                        src="@/assets/vip2.png"
+                        :alt="`VIP {{ item.viplevel }}`"
+                        class="vip-icon"
+                        draggable="false"
+                    />
                   </template>
                   <template v-if="item.viplevel == 3">
-                  <img
-                      src="@/assets/vip3.png"
-                      :alt="`VIP {{ item.viplevel }}`"
-                      class="vip-icon"
-                      draggable="false"
-                  />
+                    <img
+                        src="@/assets/vip3.png"
+                        :alt="`VIP {{ item.viplevel }}`"
+                        class="vip-icon"
+                        draggable="false"
+                    />
+                  </template>
+
+                  <template v-if="item.viplevel == 100">
+
+                    <img
+                        src="@/assets/vip100.gif"
+                        :alt="`VIP {{ item.viplevel }}`"
+                        class="vip-icon"
+                        draggable="false"
+                        style="animation: spin 2s infinite linear;width: 32px;height: 32px;margin-left: 98px"
+                    />
+                    <p class="vip-icon" style="width: 32px;height: 32px;margin-left: 105px;margin-top: 5px;color: #1e9fff;font-size: 10px">VIP
+                      100</p>
+
                   </template>
                   <img
                     style="width: 130px; height: 130px"
@@ -125,7 +139,7 @@
                   <el-dialog v-model="img" title="修改背景">
                     <div>
                       <img style="width: 130px;height: 130px" v-if="imageUrl" :src="imageUrl" alt="Uploaded Image" />
-                      <input type="file" @change="onFileChange" />
+                      <input type="file" @change="onFileChange" accept="image/*" />
                       <input type="button" value="开始上传" @click="upload">
                     </div>
                   </el-dialog>
@@ -241,7 +255,18 @@ const ChangeInfo = () => {
     info.value = false;
     return;
   }
-  
+    if(forminfo.value.title == ""){
+      forminfo.value.title = room.rooms[user.rid].title;
+    }
+    if(forminfo.value.dec == ""){
+      forminfo.value.dec = room.rooms[user.rid].dec;
+    }
+    if(forminfo.value.servercore == ""){
+      forminfo.value.servercore = room.rooms[user.rid].servercore;
+    }
+    if(forminfo.value.clientcore == ""){
+      forminfo.value.clientcore = room.rooms[user.rid].clientcore;
+    }
     const serverCoreArray = forminfo.value.servercore.split('|');
     const clientCoreArray = forminfo.value.clientcore.split('|');
     const data = {
@@ -256,7 +281,7 @@ const ChangeInfo = () => {
   
 }
 
-let item = ref<any>({});
+let item = ref<any>();
 
 watch(() => room.rooms, (newVal) => {
   item.value = newVal[0];

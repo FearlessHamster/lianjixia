@@ -87,7 +87,6 @@ common.websocket.onmessage = (event) =>{
         user.username = data.data.username;
         user.rid = data.data.rid;
         user.xp = data.data.xp;
-        localStorage.setItem("userinfo", Base64.encode(JSON.stringify(data.data)));
         
       }else{
         layer.msg("帐号密码错误",{time: 1000});
@@ -119,11 +118,6 @@ common.websocket.onmessage = (event) =>{
   }
   
   
-}
-
-if(localStorage.getItem('userinfo')) {
-  let userinfo = JSON.parse(Base64.decode(localStorage.getItem('userinfo') ?? "")) ?? [];
-  user.setUserinfo(userinfo);
 }
 
 
@@ -171,7 +165,7 @@ function prevPage() {
 
 window.addEventListener('beforeunload', () => {
   // Call the setActiveTab function with '国服大厅' as the argument
-  if(activeTab.value == "我的游戏"){
+  if(activeTab.value === "我的游戏"){
     LeavePlayer(Number(localStorage.getItem("index")?? "-1"));
   }
 })

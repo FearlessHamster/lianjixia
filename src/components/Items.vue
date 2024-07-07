@@ -11,7 +11,7 @@
                 <template v-if="i.viplevel == 1">
                 <img
                     src="@/assets/vip1.png"
-                    :alt="`VIP {{ item.viplevel }}`"
+                    :alt="`VIP ${ i.viplevel }`"
                     class="vip-icon"
                     draggable="false"
                 />
@@ -19,7 +19,7 @@
                 <template v-if="i.viplevel == 2">
                 <img
                     src="@/assets/vip2.png"
-                    :alt="`VIP {{ item.viplevel }}`"
+                    :alt="`VIP ${ i.viplevel }`"
                     class="vip-icon"
                     draggable="false"
                 />
@@ -27,11 +27,25 @@
                 <template v-if="i.viplevel == 3">
                 <img
                     src="@/assets/vip3.png"
-                    :alt="`VIP {{ item.viplevel }}`"
+                    :alt="`VIP ${ i.viplevel }`"
                     class="vip-icon"
                     draggable="false"
                 />
                 </template>
+
+              <template v-if="i.viplevel == 100">
+
+                <img
+                    src="@/assets/vip100.gif"
+                    :alt="`VIP ${ i.viplevel }`"
+                    class="vip-icon"
+                    draggable="false"
+                    style="animation: spin 2s infinite linear;width: 32px;height: 32px;margin-left: 98px"
+                />
+                <p class="vip-icon" style="width: 32px;height: 32px;margin-left: 105px;margin-top: 5px;color: #1e9fff;font-size: 10px">VIP
+                  100</p>
+
+              </template>
                 <img :src="i.img" draggable="false" />
                 <div class="item_title">
                     {{ i.title }}
