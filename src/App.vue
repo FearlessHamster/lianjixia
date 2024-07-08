@@ -11,27 +11,27 @@
       <ul class="tab">
         <li
           class="item"
-          :class="{ active: activeTab === '国服大厅' }"
-          @click="setActiveTab('国服大厅')"
+          :class="{ active: common.activeTab === '国服大厅' }"
+          @click="common.setActiveTab('国服大厅')"
         >
           国服大厅
         </li>
         <li
           class="item"
-          :class="{ active: activeTab === '我的游戏' }"
+          :class="{ active: common.activeTab === '我的游戏' }"
           @click="room.openroom(user.rid)"
         >
-          {{tabTitle}}
+          {{common.tabTitle}}
         </li>
       </ul>
 
       <div class="itembox">
         <!-- 使用.items-container来包裹.item元素 -->
-          <Items v-if="activeTab === '国服大厅'" />
+          <Items v-if="common.activeTab === '国服大厅'" />
           
-          <Rooms v-if="activeTab === '我的游戏'" />
+          <Rooms v-if="common.activeTab === '我的游戏'" />
         <!-- 分页控制 -->
-        <div class="pagination-controls" v-if="activeTab === '国服大厅' && room.totalPages!=0">
+        <div class="pagination-controls" v-if="common.activeTab === '国服大厅' && room.totalPages!=0">
           <button @click="prevPage" :disabled="room.currentPage === 1">上一页</button>
           <span>{{ room.currentPage }} / {{ room.totalPages }}</span>
           <button @click="nextPage" :disabled="room.currentPage >= room.totalPages">下一页</button>
@@ -62,7 +62,9 @@ import { layer } from "@layui/layer-vue";
 const room = useRoomStore();
 const user = useUserStore();
 const common = useCommonStore();
-common.connectWebsocket();
+if(common.websocket) {
+  common.connectWebsocket();
+}
 common.startHeartbeat();
 
 common.websocket.onmessage = (event) =>{
@@ -93,13 +95,13 @@ common.websocket.onmessage = (event) =>{
       }
       break;
     case "room":
-      console.log(data.msg);
       if(data.msg == "success"){
         room.rooms = data.data;
+        
         room.totalPages = Math.ceil(data.data.length / 18);
         
       }else{
-        setActiveTab('国服大厅');
+        common.setActiveTab('国服大厅');
         layer.msg(data.msg,{time: 1000});
       }
       break;
@@ -120,36 +122,6 @@ common.websocket.onmessage = (event) =>{
   
 }
 
-
-const tabTitle = ref('我的游戏');
-
-provide('tabTitle',tabTitle)
-
-const activeTab = ref("国服大厅");
-
-function setActiveTab(tabName: string) {
-  if(tabName === "我的游戏" && user.username == "") {
-    // 可以在这里添加一个提示，例如使用alert或者一个自定义的提示组件
-    console.log(user.username);
-    
-    user.toggleLoginStatus();
-    return; // 直接返回，不切换标签
-  }
-
-  if(tabName !== activeTab.value) {
-    if(tabName == "国服大厅") {
-      tabTitle.value = "我的游戏";
-      
-      LeavePlayer(Number(localStorage.getItem("index")?? "-1"));
-      
-      localStorage.setItem("index",user.rid.toString());
-    }
-  }
-  activeTab.value = tabName;
-}
-
-provide('setActiveTab',setActiveTab)
-
 // 翻页函数
 function nextPage() {
   if (room.currentPage < room.totalPages) {
@@ -165,8 +137,8 @@ function prevPage() {
 
 window.addEventListener('beforeunload', () => {
   // Call the setActiveTab function with '国服大厅' as the argument
-  if(activeTab.value === "我的游戏"){
-    LeavePlayer(Number(localStorage.getItem("index")?? "-1"));
+  if(common.activeTab === "我的游戏"){
+    LeavePlayer(room.rid);
   }
 })
 

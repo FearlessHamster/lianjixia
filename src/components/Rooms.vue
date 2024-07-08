@@ -8,7 +8,7 @@
               基本信息
             </li>
             <li
-              v-if="index == user.rid"
+              v-if="room.rid == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '控制台' }"
               @click="setActiveTab2('控制台')"
@@ -16,7 +16,7 @@
               控制台
             </li>
             <li
-              v-if="index == user.rid"
+              v-if="room.rid == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '设置' }"
               @click="setActiveTab2('设置')"
@@ -24,7 +24,7 @@
               设置
             </li>
             <li
-              v-if="index == user.rid"
+              v-if="room.rid == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '插件' }"
               @click="setActiveTab2('插件')"
@@ -32,7 +32,7 @@
               插件
             </li>
             <li
-              v-if="index == user.rid"
+              v-if="room.rid == user.rid"
               class="item"
               :class="{ active2: activeTab2 === '模组' }"
               @click="setActiveTab2('模组')"
@@ -132,7 +132,7 @@
                         </el-form-item>
                     </el-form>
                   </el-dialog>
-                  <button v-if="index == user.rid" @click="info = true" style="margin: 10px; width: 100px; height: 32px">
+                  <button v-if="room.rid == user.rid" @click="info = true" style="margin: 10px; width: 100px; height: 32px">
                     修改游戏
                   </button>
                   
@@ -144,7 +144,7 @@
                     </div>
                   </el-dialog>
 
-                  <button v-if="index == user.rid" @click="img = true" style="margin: 10px; width: 100px; height: 32px">
+                  <button v-if="room.rid == user.rid" @click="img = true" style="margin: 10px; width: 100px; height: 32px">
                     更换背景
                   </button>
                 </div>
@@ -185,47 +185,85 @@
                 
               </div>
               <div class="game" v-if="item">
-                <div class="playerlist">
-                  <table style="width:170px;max-width: 170px;">
-                    <tr style="color:#ea5c3e;background-color: #4D433A;">
-                        <td style="width:100px;max-width: 100px;">玩家</td>
-                        <td>状态</td>
-                    </tr>
+              <div class="playerlist">
+                <table style="width:170px;max-width: 170px;">
+                  <tr style="color:#ea5c3e;background-color: #4D433A;">
+                      <td style="width:100px;max-width: 100px;">玩家</td>
+                      <td>状态</td>
+                  </tr>
 
-                    <tr style="color:#d8d7d5;font-size: 15px;" v-for="player in item.players" :key="player">
-                        <td>{{ player }}</td>
-                        <td>等待</td>
-                    </tr>
-                  </table>
-                </div>
-                <div style="margin-top: 5px;height: 50px;max-height: 50px">
-                  <button @click="Leave()" style="background-color: #4D433A;width: 40px;height: 50px;margin-right: 2px;color: #d8d7d5;border: none;"><</button>
-                  <button style="background-color: #DA4729;width: 130px;height: 50px;color: #d8d7d5;border: none;">启动游戏</button>
-                </div>
+                  <tr style="color:#d8d7d5;font-size: 15px;" v-for="player in item.players" :key="player">
+                      <td>{{ player }}</td>
+                      <td>等待</td>
+                  </tr>
+                </table>
+              </div>
+              <div style="margin-top: 5px;height: 50px;max-height: 50px">
+                <button @click="Leave()" style="background-color: #4D433A;width: 40px;height: 50px;margin-right: 2px;color: #d8d7d5;border: none;"><</button>
+                <button style="background-color: #DA4729;width: 130px;height: 50px;color: #d8d7d5;border: none;">启动游戏</button>
               </div>
             </div>
+            </div>
+            <div v-if="activeTab2 === '控制台'" style="display: grid;">
+              <pre ref="consoleRef" class="console" style="margin-top: 60px;width: 850px;height: 380px;overflow-x: hidden;">
+                <code class="language-log line-numbers" v-for="line in consoles" :key="line">{{ "\n"+line }}</code>
+              </pre>
+              <div class="pagination-controls" style="display: flex;">
+                <el-input placeholder="command..." v-model="input" value="" /><el-button>发送</el-button>
+              </div>
+            </div>
+            
           </div>
 </template>
 
 <script setup lang="ts">
-import { watch, ref, computed, inject, type Ref } from "vue";
+import { watch, ref, computed, onMounted, onUpdated } from "vue";
 import { useRoomStore } from "@/stores/Rooms";
 import { useUserStore } from "@/stores/User";
 import { useCommonStore } from "@/stores/Common";
 import { layer } from "@layui/layer-vue";
 
+import Prism from "prismjs"
+import "prismjs/themes/prism-tomorrow.min.css"
 
+const consoles = ref([
+'[10:51:13] [ServerMain/INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]',
+'[10:51:13] [ServerMain/INFO]: Found new data pack file/bukkit, loading it automatically',
+'[10:51:13] [ServerMain/INFO]: Found new data pack paper, loading it automatically',
+'[10:51:14] [ServerMain/INFO]: No existing world data, creating new world',
+'[10:51:15] [ServerMain/INFO]: Loaded 1290 recipes',
+'[10:51:15] [ServerMain/INFO]: Loaded 1399 advancements',
+'[10:51:16] [Server thread/INFO]: Starting minecraft server version 1.21',
+'[10:51:16] [Server thread/INFO]: Loading properties',
+'[10:51:16] [Server thread/INFO]: This server is running Leaves version 1.21-7-master@5aa1100 (2024-07-07T16:25:33Z) (Implementing API version 1.21-R0.1-SNAPSHOT)',
+'[10:51:17] [Server thread/ERROR]: [Leaves] Failed to collect shearable blocks',
+'[10:51:17] [Server thread/INFO]: Using 4 threads for Netty based IO',
+'[10:51:17] [Server thread/INFO]: Server Ping Player Sample Count: 12',
+'[10:51:17] [Server thread/INFO]: [ChunkTaskScheduler] Chunk system is using 1 I/O threads, 4 worker threads, and population gen parallelism of 4 threads',
+'[10:51:18] [Server thread/INFO]: Default game type: SURVIVAL',
+'[10:51:18] [Server thread/INFO]: Generating keypair',
+'[10:51:18] [Server thread/INFO]: Starting Minecraft server on *:25565',
+'[10:51:18] [Server thread/INFO]: Using default channel type',
+'[10:51:18] [Server thread/INFO]: Paper: Using Java compression from Velocity.',
+'[10:51:18] [Server thread/INFO]: Paper: Using Java cipher from Velocity.',
+'[10:51:18] [Server thread/INFO]: Preparing level "world"',
+'[10:51:24] [Server thread/INFO]: Preparing start region for dimension minecraft:overworld',
+'[10:51:26] [Server thread/INFO]: Time elapsed: 2667 ms',
+'[10:51:26] [Server thread/INFO]: Preparing start region for dimension minecraft:the_nether',
+'[10:51:27] [Server thread/INFO]: Time elapsed: 683 ms',
+'[10:51:27] [Server thread/INFO]: Preparing start region for dimension minecraft:the_end',
+'[10:51:27] [Server thread/INFO]: Time elapsed: 262 ms',
+'[10:51:28] [Server thread/INFO]: Running delayed init tasks',
+'[10:51:28] [Server thread/INFO]: Done (11.568s)! For help, type "help"',
+]);
 
 const room = useRoomStore();
 const user = useUserStore();
 const common = useCommonStore();
 
-let index = Number(localStorage.getItem("index"));
 const activeTab2 = ref("基本信息"); // 默认激活的项
-const players = ref([]); 
+const input = ref([]); 
 
-const tabTitle = inject("tabTitle") as Ref;
-const setActiveTab = inject("setActiveTab") as Function;
 const info = ref(false);
 const img = ref(false);
 const forminfo = ref({
@@ -240,10 +278,23 @@ const clientCoreOptions = ref(common.clientcore.filter(item => item.version === 
 watch(() => forminfo.value.servercore, (newValue) =>{
   const serverCoreArray = newValue.split('|');
   clientCoreOptions.value = common.clientcore.filter(item => item.version === serverCoreArray[1]);
-  console.log(clientCoreOptions.value);
-  console.log(newValue);
-  
 })
+
+const consoleRef = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  Prism.highlightAll();
+  if (consoleRef.value) {
+    consoleRef.value.scrollTop = consoleRef.value.scrollHeight;
+  }
+});
+
+onUpdated(() => {
+  Prism.highlightAll();
+  if (consoleRef.value) {
+    consoleRef.value.scrollTop = consoleRef.value.scrollHeight;
+  }
+});
 
 const ChangeInfo = () => {
   if(
@@ -284,8 +335,14 @@ const ChangeInfo = () => {
 let item = ref<any>();
 
 watch(() => room.rooms, (newVal) => {
-  item.value = newVal[0];
-
+  for (let i = 0; i < room.rooms.length; i++) {
+    if (room.rooms[i].rid == room.rid) {
+      
+      
+      item.value = room.rooms[i];
+      break;
+    }
+  }
   // 例如，重新计算某些值或调用另一个函数
 }, {
   deep: true // 使用深度监听，以便于监听数组或对象内部值的变化
@@ -304,7 +361,7 @@ function setActiveTab2(tabName: string) {
 }
 
 async function Leave() {
-  setActiveTab('国服大厅');
+  common.setActiveTab('国服大厅');
 }
 
 const onFileChange = (event: Event) => {
@@ -424,6 +481,4 @@ if(imageUrl.value){
   margin-top: 80px;
   margin-left: 10px;
 }
-
-
 </style>
