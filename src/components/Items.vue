@@ -66,30 +66,6 @@ const user = useUserStore()
 
 
 
-let setActiveTab = inject("setActiveTab") as Function;
-let tabTitle = inject("tabTitle") as Ref;
-
-async function openroom(index: number) {
-    
-    setActiveTab("我的游戏");
-    if(user.rid == -1){
-      return;
-    }
-    
-    
-    localStorage.setItem("index", index.toString());
-    AddPlayer(index)
-    if(index == user.rid) {
-        tabTitle.value = "我的游戏";
-    }else{
-        tabTitle.value = "当前加入";
-    }
-    await getRooms();
-    
-}
-
-room.openroom = openroom;
-
 function getPlayerCountBackgroundColor(playerCount: number, maxPlayerCount: number): string {
   const ratio = playerCount / maxPlayerCount;
   if (ratio < 0.5) {
