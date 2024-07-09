@@ -5,7 +5,6 @@ import { LeavePlayer } from "@/utils/CommonServices";
 import { ref } from "vue";
 export const useCommonStore = defineStore('common', {
     state: () => {
-        // let ws = "wss://api.lianjixia.run";
         let ws = "ws://localhost:4000";
         return {
             ws: ws,
