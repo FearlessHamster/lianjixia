@@ -12,14 +12,14 @@
         <li
           class="item"
           :class="{ active: common.activeTab === '国服大厅' }"
-          @click="common.setActiveTab('国服大厅')"
+          @click="common.activeTab !== '国服大厅' && common.setActiveTab('国服大厅')"
         >
           国服大厅
         </li>
         <li
           class="item"
           :class="{ active: common.activeTab === '我的游戏' }"
-          @click="room.openroom(user.rid)"
+          @click="common.activeTab !== '我的游戏' && room.openroom(user.rid)"
         >
           {{common.tabTitle}}
         </li>
@@ -98,7 +98,7 @@ common.websocket.onmessage = (event) =>{
       if(data.msg == "success"){
         room.rooms = data.data;
         
-        room.totalPages = Math.ceil(data.data.length / 18);
+        room.totalPages = Math.ceil(data.data.length / room.itemsPerPage);
         
       }else{
         common.setActiveTab('国服大厅');
@@ -161,7 +161,7 @@ window.addEventListener('beforeunload', () => {
 
 
 .box {
-  width: 885px;
+  width: 1030px;
   height: 615px;
   position: fixed;
   background-color: #4d433a;

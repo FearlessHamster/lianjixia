@@ -13,8 +13,14 @@ export const useRoomStore = defineStore('rooms', {
                     title: "",
                     img: "",
                     dec: "",
-                    servercore: "",
-                    clientcore: "",
+                    servercore: {
+                        "name": "",
+                        "version": "",
+                    },
+                    clientcore: {
+                        "name": "",
+                        "version": "",
+                    },
                     players: [],
                     maxplayers: 0,
                     viplevel: 0,
@@ -24,15 +30,15 @@ export const useRoomStore = defineStore('rooms', {
               ]),
             rid: -1,
             currentPage: ref(1),
+            itemsPerPage: ref(21),
             totalPages: 0,
         }
     },
     getters: {
         // 使用getter来定义paginatedItems
         paginatedItems: (state) => {
-            const itemsPerPage = 18; // 假设每页18项
-            const start = (state.currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
+            const start = (state.currentPage - 1) * state.itemsPerPage;
+            const end = start + state.itemsPerPage;
             return state.rooms.slice(start, end);
         }
     },

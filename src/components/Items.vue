@@ -64,8 +64,6 @@ import { useUserStore } from '@/stores/User';
 const room = useRoomStore();
 const user = useUserStore()
 
-
-
 function getPlayerCountBackgroundColor(playerCount: number, maxPlayerCount: number): string {
   const ratio = playerCount / maxPlayerCount;
   if (ratio < 0.5) {

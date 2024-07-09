@@ -5,8 +5,8 @@ import { LeavePlayer } from "@/utils/CommonServices";
 import { ref } from "vue";
 export const useCommonStore = defineStore('common', {
     state: () => {
-        let ws = "wss://api.lianjixia.run";
-        // let ws = "ws://localhost:4000";
+        // let ws = "wss://api.lianjixia.run";
+        let ws = "ws://localhost:4000";
         return {
             ws: ws,
             websocket: new WebSocket(ws),
@@ -20,7 +20,9 @@ export const useCommonStore = defineStore('common', {
                 version: ""
             }],
             activeTab: ref("国服大厅"),
-            tabTitle: ref('我的游戏')
+            tabTitle: ref('我的游戏'),
+            activeTab2: ref("基本信息"),
+            item: ref<any>()
         }
     },
     actions: {
@@ -66,7 +68,19 @@ export const useCommonStore = defineStore('common', {
               }
             }
             this.activeTab = tabName;
-          }
+        },
+        setActiveTab2(tabName: string) {
+            this.activeTab2 = tabName;
+        },
+        refreshRoom(){
+            let room = useRoomStore();
+            for (let i = 0; i < room.rooms.length; i++) {
+                if (room.rooms[i].rid == room.rid) {
+                    this.item = room.rooms[i];
+                    break;
+                }
+            }
+        }
 
     }
 })
