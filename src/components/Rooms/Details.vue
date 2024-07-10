@@ -207,15 +207,17 @@ const changeInfo = () => {
     rid: user.rid,
     title: formInfo.value.title.trim() ?? room.rooms[user.rid].title,
     dec: formInfo.value.dec.trim() ?? room.rooms[user.rid].dec,
-    servercore: {
+    ServerCore: {
       name: serverCoreArray[0],
       version: serverCoreArray[1]
-    } ?? room.rooms[user.rid].ServerCore,
-    clientcore: {
+    },
+    ClientCore: {
       name: clientCoreArray[0],
       version: clientCoreArray[1]
-    } ?? room.rooms[user.rid].ClientCore
+    }
   }
+  console.log(data);
+  
   common.sendWebsocket("changeInfo",data)
   info.value = false;
 
@@ -259,7 +261,7 @@ watch(() => room.rooms, () => {
 <style scoped>
 .info {
   margin-left: 160px;
-  margin-top: -290px;
+  margin-top: -340px;
   color: #d8d7d5;
   width: 500px;
   height: 500px;

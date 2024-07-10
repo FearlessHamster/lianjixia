@@ -12,8 +12,8 @@
     <el-button @click="addPlugins = true">
       添加插件
     </el-button>
-    <div style="margin-left: 5px;margin-top: 5px">
-      <el-table :data="common.item.plugins" @row-dblclick="delPlugin" :key="itemKey">
+    <div style="margin-left: 5px;margin-top: 5px;">
+      <el-table :data="common.item.plugins" @row-dblclick="delPlugin" :max-height="385" :height="385" :key="itemKey">
         <el-table-column label="插件" prop="name" :width="780" />
       </el-table>
     </div>

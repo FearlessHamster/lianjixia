@@ -13,7 +13,7 @@
       添加模组
     </el-button>
     <div style="margin-left: 5px;margin-top: 5px">
-      <el-table :data="common.item.mods" @row-dblclick="delMod" :key="itemKey">
+      <el-table :data="common.item.mods" @row-dblclick="delMod" :max-height="385" :height="385" :key="itemKey">
         <el-table-column label="模组" prop="name" :width="780" />
       </el-table>
     </div>
