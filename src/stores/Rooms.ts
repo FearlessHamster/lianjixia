@@ -13,17 +13,17 @@ export const useRoomStore = defineStore('rooms', {
                     title: "",
                     img: "",
                     dec: "",
-                    servercore: {
+                    ServerCore: {
                         "name": "",
                         "version": "",
                     },
-                    clientcore: {
+                    ClientCore: {
                         "name": "",
                         "version": "",
                     },
                     players: [],
-                    maxplayers: 0,
-                    viplevel: 0,
+                    maxPlayers: 0,
+                    vipLevel: 0,
                     plugins: [],
                     mods: []
                   },

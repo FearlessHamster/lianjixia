@@ -10,18 +10,50 @@ export const useCommonStore = defineStore('common', {
             ws: ws,
             websocket: new WebSocket(ws),
             heartbeatInterval: 0,
-            servercore: [{
+            ServerCore: [{
                 name: "",
                 version: ""
             }],
-            clientcore: [{
+            ClientCore: [{
                 name: "",
                 version: ""
             }],
             activeTab: ref("国服大厅"),
             tabTitle: ref('我的游戏'),
             activeTab2: ref("基本信息"),
-            item: ref<any>()
+            item: {
+                rid: 0,
+                title: "",
+                img: "",
+                dec: "",
+                ServerCore: {
+                    name: "",
+                    version: "",
+                },
+                ClientCore: {
+                    name: "",
+                    version: "",
+                },
+                players: [],
+                maxPlayers: 0,
+                vipLevel: 0,
+                plugins: [
+                    {
+                        name: "",
+                        version: [
+                            ""
+                        ]
+                    }
+                ],
+                mods: [
+                    {
+                        name: "",
+                        version: [
+                            ""
+                        ]
+                    }
+                ]
+              }
         }
     },
     actions: {

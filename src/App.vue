@@ -53,8 +53,9 @@ import User from "@/components/User.vue";
 import { Base64 } from 'js-base64';
 import { LeavePlayer, Login } from "@/utils/CommonServices";
 import { useRoomStore } from "@/stores/Rooms";
-import { useUserStore } from "./stores/User";
-import { useCommonStore } from "./stores/Common";
+import { useUserStore } from "@/stores/User";
+import { useCommonStore } from "@/stores/Common";
+import { useResourceStore } from "@/stores/Resources";
 import { layer } from "@layui/layer-vue";
 
 
@@ -62,6 +63,7 @@ import { layer } from "@layui/layer-vue";
 const room = useRoomStore();
 const user = useUserStore();
 const common = useCommonStore();
+const resource = useResourceStore();
 if(common.websocket) {
   common.connectWebsocket();
 }
@@ -72,16 +74,17 @@ common.websocket.onmessage = (event) =>{
   
   switch (data.type) {
     case "connected":
-      common.sendWebsocket("getroom",{})
-      common.sendWebsocket("getservercore",{})
-      common.sendWebsocket("getclientcore",{})
+      common.sendWebsocket("getRoom",{})
+      common.sendWebsocket("getServerCore",{})
+      common.sendWebsocket("getClientCore",{})
+      common.sendWebsocket("getResource",{})
       const logindata = Base64.decode(localStorage.getItem("token") as string).split(" ");
       Login(logindata[0],logindata[1]);
       break;
     case "ping":
       console.log(data.msg);
       break;
-    case "login":
+    case "Login":
       if(data.msg == "success"){
         if(user.loginstatus){
           user.toggleLoginStatus();
@@ -94,10 +97,10 @@ common.websocket.onmessage = (event) =>{
         layer.msg("帐号密码错误",{time: 1000});
       }
       break;
-    case "room":
+    case "Room":
       if(data.msg == "success"){
         room.rooms = data.data;
-        
+        common.refreshRoom()
         room.totalPages = Math.ceil(data.data.length / room.itemsPerPage);
         
       }else{
@@ -105,14 +108,20 @@ common.websocket.onmessage = (event) =>{
         layer.msg(data.msg,{time: 1000});
       }
       break;
-    case "servercore":
+    case "ServerCore":
       if(data.msg == "success"){
-        common.servercore = data.data;
+        common.ServerCore = data.data;
       }
       break;
-    case "clientcore":
+    case "ClientCore":
       if(data.msg == "success"){
-        common.clientcore = data.data;
+        common.ClientCore = data.data;
+      }
+      break;
+    case "Resource":
+      if(data.msg == "success"){
+        resource.plugins = data.data.plugins;
+        resource.mods = data.data.mods;
       }
       break;
     default:

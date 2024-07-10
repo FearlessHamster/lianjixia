@@ -5,39 +5,39 @@
         class="item"
         >
             <div class="item-container" @click="room.openroom(i.rid)">
-                <div class="player-count" :style="{ backgroundColor: getPlayerCountBackgroundColor(i.players.length, i.maxplayers) }">
-                {{ i.players.length }}/{{ i.maxplayers }}
+                <div class="player-count" :style="{ backgroundColor: getPlayerCountBackgroundColor(i.players.length, i.maxPlayers) }">
+                {{ i.players.length }}/{{ i.maxPlayers }}
                 </div>
-                <template v-if="i.viplevel == 1">
+                <template v-if="i.vipLevel == 1">
                 <img
                     src="@/assets/vip1.png"
-                    :alt="`VIP ${ i.viplevel }`"
+                    :alt="`VIP ${ i.vipLevel }`"
                     class="vip-icon"
                     draggable="false"
                 />
                 </template>
-                <template v-if="i.viplevel == 2">
+                <template v-if="i.vipLevel == 2">
                 <img
                     src="@/assets/vip2.png"
-                    :alt="`VIP ${ i.viplevel }`"
+                    :alt="`VIP ${ i.vipLevel }`"
                     class="vip-icon"
                     draggable="false"
                 />
                 </template>
-                <template v-if="i.viplevel == 3">
+                <template v-if="i.vipLevel == 3">
                 <img
                     src="@/assets/vip3.png"
-                    :alt="`VIP ${ i.viplevel }`"
+                    :alt="`VIP ${ i.vipLevel }`"
                     class="vip-icon"
                     draggable="false"
                 />
                 </template>
 
-              <template v-if="i.viplevel == 100">
+              <template v-if="i.vipLevel == 100">
 
                 <img
                     src="@/assets/vip100.gif"
-                    :alt="`VIP ${ i.viplevel }`"
+                    :alt="`VIP ${ i.vipLevel }`"
                     class="vip-icon"
                     draggable="false"
                     style="animation: spin 2s infinite linear;width: 32px;height: 32px;margin-left: 98px"

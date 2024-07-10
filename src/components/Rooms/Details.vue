@@ -2,36 +2,36 @@
   <div class="itembox2" >
     <div class="itembox3" v-if="common.item">
       <div style="width: 130px !important;" class="item-container">
-        <template v-if="common.item.viplevel == 1">
+        <template v-if="common.item.vipLevel == 1">
           <img
               src="@/assets/vip1.png"
-              :alt="`VIP {{ item.viplevel }}`"
+              :alt="`VIP {{ item.vipLevel }}`"
               class="vip-icon"
               draggable="false"
           />
         </template>
-        <template v-if="common.item.viplevel == 2">
+        <template v-if="common.item.vipLevel == 2">
           <img
               src="@/assets/vip2.png"
-              :alt="`VIP {{ item.viplevel }}`"
+              :alt="`VIP {{ item.vipLevel }}`"
               class="vip-icon"
               draggable="false"
           />
         </template>
-        <template v-if="common.item.viplevel == 3">
+        <template v-if="common.item.vipLevel == 3">
           <img
               src="@/assets/vip3.png"
-              :alt="`VIP {{ item.viplevel }}`"
+              :alt="`VIP {{ item.vipLevel }}`"
               class="vip-icon"
               draggable="false"
           />
         </template>
 
-        <template v-if="common.item.viplevel == 100">
+        <template v-if="common.item.vipLevel == 100">
 
           <img
               src="@/assets/vip100.gif"
-              :alt="`VIP {{ item.viplevel }}`"
+              :alt="`VIP {{ item.vipLevel }}`"
               class="vip-icon"
               draggable="false"
               style="animation: spin 2s infinite linear;width: 32px;height: 32px;margin-left: 98px"
@@ -61,16 +61,16 @@
             <el-form-item label="介绍" prop="dec">
               <el-input v-model="formInfo.dec" :rows="5" type="textarea" :placeholder="room.rooms[user.rid].dec" />
             </el-form-item>
-            <el-form-item label="服务器核心" prop="servercore">
-              <el-select v-model="formInfo.servercore" placeholder="请选择">
-                <el-option v-for="item in common.servercore"
+            <el-form-item label="服务器核心" prop="ServerCore">
+              <el-select v-model="formInfo.ServerCore" placeholder="请选择">
+                <el-option v-for="item in common.ServerCore"
                            :key="item.name"
                            :label="item.name"
                            :value="item.name +'|'+item.version" />
               </el-select>
             </el-form-item>
-            <el-form-item label="客户端核心" prop="clientcore">
-              <el-select v-model="formInfo.clientcore" placeholder="请选择">
+            <el-form-item label="客户端核心" prop="ClientCore">
+              <el-select v-model="formInfo.ClientCore" placeholder="请选择">
                 <el-option v-for="item in clientCoreOptions"
                            :key="item.name"
                            :label="item.name"
@@ -115,26 +115,26 @@
       <div class="server">
         服务器核心：
         <br />
-        {{ common.item.servercore.name }}
+        {{ common.item.ServerCore.name }}
       </div>
       <br>
       <div class="client">
         客户端核心：
         <br />
-        {{ common.item.clientcore.name }}
+        {{ common.item.ClientCore.name }}
       </div>
       <br>
       <div style="display: flex;">
         <div class="plugins" style="margin-right: 200px;">
           包含插件{{common.item.plugins.length}}个：
           <div class="plugin" v-for="plugin in common.item.plugins">
-            {{ plugin }}
+            {{ plugin.name }}
           </div>
         </div>
         <br>
         <div class="mods">
           包含模组{{common.item.mods.length}}个：
-          <div v-for="mod in common.item.mods">{{ mod }}</div>
+          <div v-for="mod in common.item.mods">{{ mod.name }}</div>
         </div>
       </div>
 
@@ -161,28 +161,28 @@ const img = ref(false);
 const formInfo = ref({
   title: "",
   dec: "",
-  servercore: "",
-  clientcore: ""
+  ServerCore: "",
+  ClientCore: ""
 })
 const imageUrl = ref<string | null>(null);
-const clientCoreOptions = ref(common.clientcore.filter(item => item.version === formInfo.value.servercore));
+const clientCoreOptions = ref(common.ClientCore.filter(item => item.version === formInfo.value.ServerCore));
 
 const truncatedDec = computed(() => {
   if (common.item && common.item.dec.length > 200) {
-    return common.item.value.dec.substring(0, 200) + '...';
+    return common.item.dec.substring(0, 200) + '...';
   }
   return common.item ? common.item.dec : '';
 });
 
-watch(() => formInfo.value.servercore, (newValue) =>{
+watch(() => formInfo.value.ServerCore, (newValue) =>{
   const serverCoreArray = newValue.split('|');
-  clientCoreOptions.value = common.clientcore.filter(item => item.version === serverCoreArray[1]);
+  clientCoreOptions.value = common.ClientCore.filter(item => item.version === serverCoreArray[1]);
 })
 
 const changeInfo = () => {
   if(
-      formInfo.value.servercore.trim() == "" &&
-      formInfo.value.clientcore.trim() == "" &&
+      formInfo.value.ServerCore.trim() == "" &&
+      formInfo.value.ClientCore.trim() == "" &&
       formInfo.value.title.trim() == "" &&
       formInfo.value.dec.trim() == ""
   ){
@@ -195,14 +195,14 @@ const changeInfo = () => {
   if(formInfo.value.dec == ""){
     formInfo.value.dec = room.rooms[user.rid].dec;
   }
-  if(formInfo.value.servercore == ""){
-    formInfo.value.servercore = room.rooms[user.rid].servercore.name + "|" + room.rooms[user.rid].servercore.version;
+  if(formInfo.value.ServerCore == ""){
+    formInfo.value.ServerCore = room.rooms[user.rid].ServerCore.name + "|" + room.rooms[user.rid].ServerCore.version;
   }
-  if(formInfo.value.clientcore == ""){
-    formInfo.value.clientcore = room.rooms[user.rid].clientcore.name + "|" + room.rooms[user.rid].clientcore.version;
+  if(formInfo.value.ClientCore == ""){
+    formInfo.value.ClientCore = room.rooms[user.rid].ClientCore.name + "|" + room.rooms[user.rid].ClientCore.version;
   }
-  const serverCoreArray = formInfo.value.servercore.split('|');
-  const clientCoreArray = formInfo.value.clientcore.split('|');
+  const serverCoreArray = formInfo.value.ServerCore.split('|');
+  const clientCoreArray = formInfo.value.ClientCore.split('|');
   const data = {
     rid: user.rid,
     title: formInfo.value.title.trim() ?? room.rooms[user.rid].title,
@@ -210,13 +210,13 @@ const changeInfo = () => {
     servercore: {
       name: serverCoreArray[0],
       version: serverCoreArray[1]
-    } ?? room.rooms[user.rid].servercore,
+    } ?? room.rooms[user.rid].ServerCore,
     clientcore: {
       name: clientCoreArray[0],
       version: clientCoreArray[1]
-    } ?? room.rooms[user.rid].clientcore
+    } ?? room.rooms[user.rid].ClientCore
   }
-  common.sendWebsocket("changeinfo",data)
+  common.sendWebsocket("changeInfo",data)
   info.value = false;
 
 }
@@ -239,7 +239,7 @@ const upload = () => {
       layer.msg("超出最大图片限制(300kb)限制",{time: 1000})
       return
     }
-    common.sendWebsocket("uploadimg",{
+    common.sendWebsocket("uploadImg",{
       rid: user.rid,
       img: imageUrl.value
     })

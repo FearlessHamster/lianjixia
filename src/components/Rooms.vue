@@ -41,9 +41,14 @@
         </li>
       </ul>
       <div class="main-container">
-        <Details v-if="common.activeTab2 === '基本信息'" />
-        <Console v-if="common.activeTab2 === '控制台'" />
-        <Settings v-if="common.activeTab2 === '设置'" />
+        <div class="test">
+          <Details v-if="common.activeTab2 === '基本信息'" />
+          <Console v-if="common.activeTab2 === '控制台'" />
+          <Settings v-if="common.activeTab2 === '设置'" />
+          <Plugins v-if="common.activeTab2 === '插件'" />
+          <Mods v-if="common.activeTab2 === '模组'" />
+        </div>
+
 
         <Game />
       </div>
@@ -57,12 +62,12 @@ import Console from "./Rooms/Console.vue";
 import Details from "./Rooms/Details.vue";
 import Settings from "./Rooms/Settings.vue";
 import Game from "./Rooms/Game.vue"
+import Plugins from "./Rooms/Plugins.vue"
+import Mods from "./Rooms/Mods.vue";
 
 const room = useRoomStore();
 const user = useUserStore();
 const common = useCommonStore();
-
-
 
 common.refreshRoom()
 
@@ -75,6 +80,12 @@ common.refreshRoom()
   color: #ea5c3e !important;
 }
 .main-container {
-  display: inline-flex;
+  display: flex;
+}
+.test {
+  display: flex;
+  margin-top: 60px;
+  width: 783px;
+  height: 432px;
 }
 </style>
