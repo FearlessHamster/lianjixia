@@ -45,7 +45,7 @@
 
 
 <script setup lang="ts">
-import { ref, provide } from "vue";
+import { ref, provide, onMounted } from "vue";
 import Title from "@/components/icons/TitleIcon.vue";
 import Rooms from "@/components/Rooms.vue";
 import Items from "@/components/Items.vue";
@@ -57,29 +57,24 @@ import { useUserStore } from "@/stores/User";
 import { useCommonStore } from "@/stores/Common";
 import { useResourceStore } from "@/stores/Resources";
 import { layer } from "@layui/layer-vue";
+import axios from "axios";
 
-
-
-const room = useRoomStore();
-const user = useUserStore();
-const common = useCommonStore();
-const resource = useResourceStore();
-if(common.websocket) {
-  common.connectWebsocket();
-}
-common.startHeartbeat();
-
-common.websocket.onmessage = (event) =>{
+const messages = (event: any) =>{
   const data = JSON.parse(event.data);
-  
+
   switch (data.type) {
     case "connected":
       common.sendWebsocket("getRoom",{})
       common.sendWebsocket("getServerCore",{})
       common.sendWebsocket("getClientCore",{})
       common.sendWebsocket("getResource",{})
-      const logindata = Base64.decode(localStorage.getItem("token") as string).split(" ");
-      Login(logindata[0],logindata[1]);
+      const token = ref(localStorage.getItem("token") ?? "")
+      const logindata = ref<any>()
+      if(token.value !== ""){
+        logindata.value = Base64.decode(token.value).split(" ");
+        Login(logindata.value[0],logindata.value[1]);
+      }
+      
       break;
     case "ping":
       console.log(data.msg);
@@ -92,7 +87,7 @@ common.websocket.onmessage = (event) =>{
         user.username = data.data.username;
         user.rid = data.data.rid;
         user.xp = data.data.xp;
-        
+
       }else{
         layer.msg("帐号密码错误",{time: 1000});
       }
@@ -102,7 +97,7 @@ common.websocket.onmessage = (event) =>{
         room.rooms = data.data;
         common.refreshRoom()
         room.totalPages = Math.ceil(data.data.length / room.itemsPerPage);
-        
+
       }else{
         common.setActiveTab('国服大厅');
         layer.msg(data.msg,{time: 1000});
@@ -127,9 +122,28 @@ common.websocket.onmessage = (event) =>{
     default:
       break;
   }
-  
-  
 }
+
+
+
+
+const room = useRoomStore();
+const user = useUserStore();
+const common = useCommonStore();
+const resource = useResourceStore();
+
+onMounted(() => {
+  axios.get("/config.json").then(response => {
+    useCommonStore().ws = response.data.ws;
+
+    common.connectWebsocket()
+    if(common.websocket) {
+      common.startHeartbeat();
+
+      common.websocket.onmessage = messages
+    }
+  })
+})
 
 // 翻页函数
 function nextPage() {

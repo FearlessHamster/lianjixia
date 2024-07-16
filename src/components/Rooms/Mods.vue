@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, computed} from 'vue';
+import {ref, computed} from 'vue';
 import {useCommonStore} from "@/stores/Common";
 import {useResourceStore} from "@/stores/Resources";
 import { layer } from '@layui/layer-vue';

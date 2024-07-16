@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, computed} from 'vue';
+import {ref, computed} from 'vue';
 import {useCommonStore} from "@/stores/Common";
 import {useResourceStore} from "@/stores/Resources";
 import { layer } from '@layui/layer-vue';
@@ -41,8 +41,6 @@ const filteredPlugins = computed(() => {
 });
 
 const addPlugin = (row: any) => {
-  // Execute your command here
-  console.log(row);
   if(common.item.plugins.filter(plugin =>
   plugin.name === row.name).length === 0){
     common.sendWebsocket('addPlugin', {
@@ -56,7 +54,6 @@ const addPlugin = (row: any) => {
 };
 
 const delPlugin = (row: any) => {
-  console.log(row);
   if(common.item.plugins.filter(plugin =>
     plugin.name === row.name).length > 0){
     common.sendWebsocket('delPlugin', {

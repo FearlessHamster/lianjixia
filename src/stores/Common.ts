@@ -3,13 +3,13 @@ import { useUserStore } from "./User";
 import { useRoomStore } from "./Rooms";
 import { LeavePlayer } from "@/utils/CommonServices";
 import { ref } from "vue";
+
+
 export const useCommonStore = defineStore('common', {
     state: () => {
-        // let ws = "wss://api.lianjixia.run"
-        let ws = "ws://localhost:4000";
         return {
-            ws: ws,
-            websocket: new WebSocket(ws),
+            ws: "",
+            websocket: null as WebSocket | null,
             heartbeatInterval: 0,
             ServerCore: [{
                 name: "",
@@ -62,13 +62,17 @@ export const useCommonStore = defineStore('common', {
             this.websocket = new WebSocket(this.ws);
         },
         disconnectWebsocket() {
-            this.websocket.close();
+            if (this.websocket) { // Check if websocket is not null before closing it
+                this.websocket.close();
+            }
         },
         sendWebsocket(type: string, data: any) {
-            this.websocket.send(JSON.stringify({
-                type: type,
-                data: data
-            }));
+            if (this.websocket) {
+                this.websocket.send(JSON.stringify({
+                    type: type,
+                    data: data
+                }));
+            }
         },
         startHeartbeat() {
             this.heartbeatInterval = setInterval(() => {
